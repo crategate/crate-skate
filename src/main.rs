@@ -1,5 +1,6 @@
 use gtk::prelude::*;
 use gtk::{glib, Application, ApplicationWindow, Button};
+use soloud::*;
 
 const APP_ID: &str = "org.gtk_rs.HelloWorld2";
 
@@ -28,6 +29,15 @@ fn build_ui(app: &Application) {
     button.connect_clicked(|button| {
         // Set the label to "Hello World!" after the button has been clicked on
         button.set_label("Hello World!");
+
+        let sl = Soloud::default().unwrap();
+        let mut wav = audio::Wav::default();
+        wav.load_mem(include_bytes!("../assets/Laid-Off.mp3"))
+            .unwrap();
+        sl.play(&wav);
+        while sl.voice_count() > 0 {
+            std::thread::sleep(std::time::Duration::from_millis(100));
+        }
     });
 
     // Create a window
@@ -40,5 +50,3 @@ fn build_ui(app: &Application) {
     // Present window
     window.present();
 }
-
-
