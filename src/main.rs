@@ -26,6 +26,7 @@ fn build_ui(app: &Application) {
         .build();
 
     // Connect to "clicked" signal of `button`
+    //tokentest
     button.connect_clicked(|button| {
         // Set the label to "Hello World!" after the button has been clicked on
         button.set_label("Hello World!");
