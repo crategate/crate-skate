@@ -1,3 +1,7 @@
+mod custom_button;
+
+use custom_button::CustomButton;
+
 use crate::glib::clone;
 use gtk::{glib, Application, ApplicationWindow, Button};
 use gtk::{prelude::*, Orientation};
@@ -21,13 +25,11 @@ fn main() -> glib::ExitCode {
 fn build_ui(app: &Application) {
     let number = Rc::new(Cell::new(0));
     // Create a button with label and margins
-    let button_increase = Button::builder()
-        .label("increase")
-        .margin_top(12)
-        .margin_bottom(12)
-        .margin_start(12)
-        .margin_end(12)
-        .build();
+    let button_increase = CustomButton::with_label("increase");
+    button_increase.set_margin_top(12);
+    button_increase.set_margin_bottom(12);
+    button_increase.set_margin_start(12);
+    button_increase.set_margin_end(12);
 
     let button_decrease = Button::builder()
         .label("decrease")
