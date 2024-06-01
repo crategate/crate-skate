@@ -1,6 +1,6 @@
 use crate::glib::clone;
-use gtk::{prelude::*, Orientation};
 use gtk::{glib, Application, ApplicationWindow, Button};
+use gtk::{prelude::*, Orientation};
 use soloud::*;
 use std::cell::Cell;
 use std::rc::Rc;
