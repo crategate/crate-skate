@@ -1,5 +1,5 @@
 use crate::glib::clone;
-use gtk::prelude::*;
+use gtk::{prelude::*, Orientation};
 use gtk::{glib, Application, ApplicationWindow, Button};
 use soloud::*;
 use std::cell::Cell;
@@ -39,12 +39,18 @@ fn build_ui(app: &Application) {
 
     // Connect callbacks
     // When a button is clicked, `number` should be changed
-    button_increase.connect_clicked(clone!(@strong number => move |_| {
-        number.set(number.get() + 1);
+    // Connect callbacks
+    // When a button is clicked, `number` and label of the other button will be changed
+    button_increase.connect_clicked(clone!(@weak number, @weak button_decrease =>
+        move |_| {
+            number.set(number.get() + 1);
+            button_decrease.set_label(&number.get().to_string());
     }));
-
-    button_decrease.connect_clicked(move |_| number.set(number.get() - 1));
-
+    button_decrease.connect_clicked(clone!(@weak button_increase =>
+        move |_| {
+            number.set(number.get() - 1);
+            button_increase.set_label(&number.get().to_string());
+    }));
     // Connect to "clicked" signal of `button`
     // button.connect_clicked(|button| {
     //     // Set the label to "Hello World!" after the button has been clicked on
@@ -60,12 +66,17 @@ fn build_ui(app: &Application) {
     //     }
     // });
 
+    // Add buttons to `gtk_box`
+    let gtk_box = gtk::Box::builder()
+        .orientation(Orientation::Vertical)
+        .build();
+    gtk_box.append(&button_increase);
+    gtk_box.append(&button_decrease);
     // Create a window
     let window = ApplicationWindow::builder()
         .application(app)
         .title("My GTK App")
-        .child(&button_increase)
-        .child(&button_decrease)
+        .child(&gtk_box)
         .build();
 
     // Present window
