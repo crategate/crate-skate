@@ -3,7 +3,7 @@ mod custom_button;
 use custom_button::CustomButton;
 
 use crate::glib::clone;
-use gtk::{glib, Application, ApplicationWindow, Button};
+use gtk::{glib, Application, ApplicationWindow, Button, Switch};
 use gtk::{prelude::*, Orientation};
 use soloud::*;
 use std::cell::Cell;
@@ -73,18 +73,31 @@ fn build_ui(app: &Application) {
     //     }
     // });
 
+    let switch = Switch::new();
+    switch.set_margin_top(42);
+    switch.set_margin_bottom(12);
+    switch.set_margin_start(12);
+    switch.set_margin_end(12);
+
+    // Set and then immediately obtain active property
+    switch.set_active(true);
+    let switch_active = switch.is_active();
     // Add buttons to `gtk_box`
     let gtk_box = gtk::Box::builder()
         .orientation(Orientation::Vertical)
         .build();
     gtk_box.append(&button_increase);
     gtk_box.append(&button_decrease);
+    gtk_box.append(&switch);
+
+    // This prints: "The active property of switch is true"
+    // println!("The active property of switch is {}", switch_active);
 
     // Create a window
     let window = ApplicationWindow::builder()
         .application(app)
         .title("My GTK App")
-        .child(&button)
+        .child(&gtk_box)
         .build();
 
     // Present window
