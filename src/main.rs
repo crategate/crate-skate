@@ -39,6 +39,11 @@ fn build_ui(app: &Application) {
         .margin_end(12)
         .build();
 
+    let button = CustomButton::new();
+    button.set_margin_top(12);
+    button.set_margin_bottom(12);
+    button.set_margin_start(12);
+    button.set_margin_end(12);
     // Connect callbacks
     // When a button is clicked, `number` should be changed
     // Connect callbacks
@@ -74,11 +79,12 @@ fn build_ui(app: &Application) {
         .build();
     gtk_box.append(&button_increase);
     gtk_box.append(&button_decrease);
+
     // Create a window
     let window = ApplicationWindow::builder()
         .application(app)
         .title("My GTK App")
-        .child(&gtk_box)
+        .child(&button)
         .build();
 
     // Present window
