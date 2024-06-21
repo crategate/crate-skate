@@ -6,3 +6,6 @@ edition = "2021"
 [dependencies]
 gtk = { version = "0.8.2", package = "gtk4", features = ["v4_14"] }
 soloud = "1.0.5"
+
+[build-dependencies]
+glib-build-tools = "0.19.0"
