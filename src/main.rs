@@ -3,7 +3,10 @@ mod custom_button;
 use custom_button::CustomButton;
 
 use crate::glib::clone;
-use gtk::{glib, Application, ApplicationWindow, Button, Switch};
+use gtk::{
+    glib, Application, ApplicationWindow, Button, Label, ListBox, PolicyType, ScrolledWindow,
+    Switch,
+};
 use gtk::{prelude::*, Orientation};
 use soloud::*;
 use std::cell::Cell;
@@ -23,6 +26,10 @@ fn main() -> glib::ExitCode {
 }
 
 fn build_ui(app: &Application) {
+    let switch = Switch::new();
+
+    // Set and then immediately obtain active property
+
     let number = Rc::new(Cell::new(0));
     // Create a button with label and margins
     let button_increase = CustomButton::with_label("increase");
@@ -48,10 +55,22 @@ fn build_ui(app: &Application) {
     // When a button is clicked, `number` should be changed
     // Connect callbacks
     // When a button is clicked, `number` and label of the other button will be changed
+
+    // Set and then immediately obtain active property
+    switch.set_active(true);
+    let switch_active = switch.is_active();
+
     button_increase.connect_clicked(clone!(@weak number, @weak button_decrease =>
+
         move |_| {
-            number.set(number.get() + 1);
             button_decrease.set_label(&number.get().to_string());
+            number.set(number.get() + 1);
+
+            switch.set_active(true);
+            let switch_active = switch.is_active();
+
+            // This prints: "The active property of switch is true"
+            println!("The active property of switch is {}", switch_active);
     }));
     button_decrease.connect_clicked(clone!(@weak button_increase =>
         move |_| {
@@ -79,10 +98,19 @@ fn build_ui(app: &Application) {
     switch.set_margin_start(12);
     switch.set_margin_end(12);
 
-    // Set and then immediately obtain active property
-    switch.set_active(true);
-    let switch_active = switch.is_active();
-    // Add buttons to `gtk_box`
+    let list_box = ListBox::new();
+    for number in 0..=100 {
+        let label = Label::new(Some(&number.to_string()));
+        list_box.append(&label);
+    }
+
+    // list_box is long and needs a scrolled window
+    let scrolled_window = ScrolledWindow::builder()
+        .hscrollbar_policy(PolicyType::Never) // Disable horizontal scrolling
+        .min_content_width(360)
+        .child(&list_box)
+        .build();
+
     let gtk_box = gtk::Box::builder()
         .orientation(Orientation::Vertical)
         .build();
@@ -97,6 +125,7 @@ fn build_ui(app: &Application) {
     let window = ApplicationWindow::builder()
         .application(app)
         .title("My GTK App")
+        .child(&scrolled_window)
         .child(&gtk_box)
         .build();
 
